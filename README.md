@@ -1,45 +1,57 @@
-🎮 Gyro Orb: Um Jogo de Coleta Controlado por Giroscópio
-Este é um projeto de jogo arcade simples construído com React Native e Expo, utilizando o sensor de Giroscópio do dispositivo para controlar o movimento do jogador.
+# 🎮 Gyro Orb: Um Jogo de Coleta Controlado por Giroscópio
 
-Visão Geral do Jogo
-O objetivo do jogador (bola coral) é coletar o máximo de orbes azuis possível dentro do limite de tempo de 30 segundos, utilizando a inclinação do dispositivo como controle.
+Gyro Orb é um jogo arcade simples e divertido, desenvolvido com **React Native** e **Expo**, que utiliza o **sensor de giroscópio** do dispositivo para controlar o movimento do jogador.  
 
-Funcionalidades Chave
-Controle por Giroscópio: O movimento da bola coral é diretamente mapeado para a inclinação do seu celular. A sensibilidade foi ajustada para um controle suave (multiplicador de 5).
+---
 
-Sistema de Pontuação: A pontuação é incrementada a cada orbe azul coletado.
+## 📖 Visão Geral
+O objetivo do jogador (**bola coral**) é coletar o máximo de **orbes azuis** possível dentro do limite de **30 segundos**, inclinando o celular para se movimentar.  
 
-Tempo Limite (Game Over): O jogo tem um timer regressivo de 30 segundos. Ao chegar a zero, a tela de Game Over exibe a pontuação final.
+---
 
-Gerenciamento de Estado: Telas de início, jogo ativo e fim de jogo controlam o fluxo e a interação.
+## ✨ Funcionalidades
+- 🎛️ **Controle por Giroscópio**: o movimento da bola coral é mapeado diretamente para a inclinação do celular.  
+- 🌀 **Sensibilidade ajustada**: controle suave (multiplicador de 5).  
+- ⭐ **Sistema de Pontuação**: cada orbe azul coletado aumenta sua pontuação.  
+- ⏳ **Tempo Limite**: contador regressivo de 30 segundos (Game Over ao chegar a zero).  
+- 📱 **Fluxo de Telas**: início → jogo ativo → fim de jogo, tudo com gerenciamento de estado.  
+- 🔒 **Limites de Tela**: jogador e orbes sempre permanecem dentro das bordas da tela.  
 
-Limites de Tela: Tanto o jogador quanto os orbes são garantidos de permanecer dentro das bordas da tela.
+---
 
-Primeiros Passos
-Este é um projeto Expo criado com create-expo-app.
+## 🚀 Primeiros Passos
 
-1. Instalação de Dependências
-Certifique-se de ter o Node.js e o Expo CLI instalados. Em seguida, instale as dependências do projeto:
+Este projeto foi criado com **create-expo-app**.  
 
+### 1️⃣ Instalação de Dependências
+Certifique-se de ter **Node.js** e o **Expo CLI** instalados. Depois, rode:  
+```bash
 npm install
-
-2. Rodando o Aplicativo
+2️⃣ Rodando o Aplicativo
 Para iniciar o servidor de desenvolvimento:
 
+bash
+Copiar código
 npx expo start
+3️⃣ Executando o Jogo
+Você pode abrir o app de duas formas:
 
-Você pode abrir o aplicativo em:
+📲 Expo Go: abra o app no seu celular e escaneie o QR Code (recomendado para testar o giroscópio).
 
-Expo Go: Use o aplicativo Expo Go no seu celular e escaneie o código QR (Recomendado para testar o Gyroscope).
+💻 Emulador/Simulador: rode em um emulador Android ou simulador iOS.
 
-Emulador/Simulador: Abra o projeto em um Android emulator ou iOS simulator.
+🛠️ Desenvolvimento
+Comece a modificar os arquivos dentro da pasta app/ ou o arquivo principal do jogo que contém a lógica.
 
-3. Começando a Desenvolver
-Você pode começar a desenvolver editando os arquivos dentro do diretório app (ou o arquivo principal do jogo que contém a lógica).
+📷 Demonstração (Opcional)
+👉 Adicione aqui um GIF ou imagem mostrando o jogo em funcionamento.
 
-Aprenda Mais
-Para aprender mais sobre o desenvolvimento do seu projeto com Expo, consulte os seguintes recursos:
+📌 Tecnologias Utilizadas
+React Native
 
-Documentação do Expo: Aprenda os fundamentos e tópicos avançados.
+Expo
 
-Tutorial Learn Expo: Siga um tutorial passo a passo.
+Expo Sensors
+
+👨‍💻 Autor
+Feito com ❤️ por Maria Julia Domingues Antunes
