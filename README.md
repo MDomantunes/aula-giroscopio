@@ -1,50 +1,45 @@
-# Welcome to your Expo app 👋
+🎮 Gyro Orb: Um Jogo de Coleta Controlado por Giroscópio
+Este é um projeto de jogo arcade simples construído com React Native e Expo, utilizando o sensor de Giroscópio do dispositivo para controlar o movimento do jogador.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Visão Geral do Jogo
+O objetivo do jogador (bola coral) é coletar o máximo de orbes azuis possível dentro do limite de tempo de 30 segundos, utilizando a inclinação do dispositivo como controle.
 
-## Get started
+Funcionalidades Chave
+Controle por Giroscópio: O movimento da bola coral é diretamente mapeado para a inclinação do seu celular. A sensibilidade foi ajustada para um controle suave (multiplicador de 5).
 
-1. Install dependencies
+Sistema de Pontuação: A pontuação é incrementada a cada orbe azul coletado.
 
-   ```bash
-   npm install
-   ```
+Tempo Limite (Game Over): O jogo tem um timer regressivo de 30 segundos. Ao chegar a zero, a tela de Game Over exibe a pontuação final.
 
-2. Start the app
+Gerenciamento de Estado: Telas de início, jogo ativo e fim de jogo controlam o fluxo e a interação.
 
-   ```bash
-   npx expo start
-   ```
+Limites de Tela: Tanto o jogador quanto os orbes são garantidos de permanecer dentro das bordas da tela.
 
-In the output, you'll find options to open the app in a
+Primeiros Passos
+Este é um projeto Expo criado com create-expo-app.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+1. Instalação de Dependências
+Certifique-se de ter o Node.js e o Expo CLI instalados. Em seguida, instale as dependências do projeto:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+npm install
 
-## Get a fresh project
+2. Rodando o Aplicativo
+Para iniciar o servidor de desenvolvimento:
 
-When you're ready, run:
+npx expo start
 
-```bash
-npm run reset-project
-```
+Você pode abrir o aplicativo em:
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Expo Go: Use o aplicativo Expo Go no seu celular e escaneie o código QR (Recomendado para testar o Gyroscope).
 
-## Learn more
+Emulador/Simulador: Abra o projeto em um Android emulator ou iOS simulator.
 
-To learn more about developing your project with Expo, look at the following resources:
+3. Começando a Desenvolver
+Você pode começar a desenvolver editando os arquivos dentro do diretório app (ou o arquivo principal do jogo que contém a lógica).
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Aprenda Mais
+Para aprender mais sobre o desenvolvimento do seu projeto com Expo, consulte os seguintes recursos:
 
-## Join the community
+Documentação do Expo: Aprenda os fundamentos e tópicos avançados.
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Tutorial Learn Expo: Siga um tutorial passo a passo.
