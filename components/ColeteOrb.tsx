@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Dimensions, Text, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, View, Dimensions, Text, TouchableOpacity } from 'react-native';
 import { Gyroscope } from 'expo-sensors';
+
+// Importa os novos componentes de tela
+import HomeScreen from './HomeScreen';
+import GameOver from './GameOver';
 
 const { width, height } = Dimensions.get('window');
 const PLAYER_SIZE = 50;
 const ORB_SIZE = 30;
 
-// Estado de jogo (para controlar quando o jogador pode se mover)
+// Constantes do Jogo
 const GAME_STATE = {
-  READY: 'ready',
-  PLAYING: 'playing',
-  GAMEOVER: 'gameover',
+  READY: 'ready', 
+  PLAYING: 'playing', 
+  GAMEOVER: 'gameover', 
 };
-const INITIAL_TIME = 30; // 30 segundos de jogo
+const INITIAL_TIME = 30; 
+const TIME_BONUS = 3; 
+const MOVEMENT_SENSITIVITY = 5; 
 
 const generateRandomPosition = () => {
   const position = {
@@ -22,23 +28,30 @@ const generateRandomPosition = () => {
   return position;
 };
 
-export default function App() {
+export default function ColeteOrbe() {
   const [data, setData] = useState({ x: 0, y: 0, z: 0 });
   const [playerPosition, setPlayerPosition] = useState({ x: width / 2, y: height / 2 });
   const [orbPosition, setOrbPosition] = useState(generateRandomPosition());
   
-  // NOVAS FUNCIONALIDADES:
   const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(0); 
   const [timeLeft, setTimeLeft] = useState(INITIAL_TIME);
   const [gameState, setGameState] = useState(GAME_STATE.READY);
 
-  // Função para reiniciar o jogo
-  const resetGame = () => {
+  // Função para começar um novo jogo (usada na Home Screen e no Play Again)
+  const startGame = () => {
     setScore(0);
     setTimeLeft(INITIAL_TIME);
     setPlayerPosition({ x: width / 2, y: height / 2 });
     setOrbPosition(generateRandomPosition());
     setGameState(GAME_STATE.PLAYING);
+  };
+  
+  // Função para voltar à tela inicial (usada no Game Over)
+  const goToHome = () => {
+    setGameState(GAME_STATE.READY);
+    setScore(0); 
+    setTimeLeft(INITIAL_TIME);
   };
 
   // 1. Efeito do Giroscópio (Movimento do Jogador)
@@ -52,11 +65,10 @@ export default function App() {
 
   // 2. Lógica de Movimento e Limites da Tela
   useEffect(() => {
-    // MOVE APENAS SE O JOGO ESTIVER EM ANDAMENTO
     if (gameState !== GAME_STATE.PLAYING) return;
 
-    let newX = playerPosition.x - data.y * 10;
-    let newY = playerPosition.y - data.x * 10;
+    let newX = playerPosition.x - data.y * MOVEMENT_SENSITIVITY; 
+    let newY = playerPosition.y - data.x * MOVEMENT_SENSITIVITY; 
 
     // Limites da tela
     if (newX < 0) newX = 0;
@@ -67,9 +79,8 @@ export default function App() {
     setPlayerPosition({ x: newX, y: newY });
   }, [data, gameState]);
 
-  // 3. Lógica de Colisão e Pontuação
+  // 3. Lógica de Colisão, Pontuação e Bônus de Tempo
   useEffect(() => {
-    // VERIFICA COLISÃO APENAS SE O JOGO ESTIVER EM ANDAMENTO
     if (gameState !== GAME_STATE.PLAYING) return;
 
     const playerCenterX = playerPosition.x + PLAYER_SIZE / 2;
@@ -81,57 +92,62 @@ export default function App() {
     const dy = playerCenterY - orbCenterY;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    // Colisão: distância entre os centros é menor que a soma dos raios
     if (distance < (PLAYER_SIZE / 2) + (ORB_SIZE / 2)) {
-      // PONTO ADICIONADO AQUI:
       setScore(prevScore => prevScore + 1);
+      
+      // BÔNUS DE TEMPO
+      setTimeLeft(prevTime => prevTime + TIME_BONUS);
+      
       setOrbPosition(generateRandomPosition());
     }
-  }, [playerPosition, gameState]); // Depende do movimento do jogador
+  }, [playerPosition, gameState]);
 
-  // 4. Lógica do Contador de Tempo (Timer e Game Over)
+  // 4. Lógica do Contador de Tempo (Timer, Game Over e Recorde)
   useEffect(() => {
-    // TIMER SÓ FUNCIONA NO ESTADO PLAYING
-    if (gameState !== GAME_STATE.PLAYING) {
-      return;
+    if (gameState === GAME_STATE.READY) {
+        setTimeLeft(INITIAL_TIME); 
+        return;
     }
 
     if (timeLeft <= 0) {
+      // ATUALIZA RECORD
+      if (score > highScore) {
+        setHighScore(score);
+      }
       setGameState(GAME_STATE.GAMEOVER);
       return;
     }
 
-    const timer = setInterval(() => {
-      setTimeLeft(prevTime => prevTime - 1);
-    }, 1000);
+    if (gameState === GAME_STATE.PLAYING) {
+        const timer = setInterval(() => {
+            setTimeLeft(prevTime => prevTime - 1);
+        }, 1000);
 
-    return () => clearInterval(timer);
-  }, [timeLeft, gameState]);
+        return () => clearInterval(timer);
+    }
+  }, [timeLeft, gameState, score, highScore]);
 
 
-  // 5. Exibe a tela de Game Over/Ready
+  // 5. Renderização das Telas e do Jogo
   const renderGameOverlay = () => {
     if (gameState === GAME_STATE.READY) {
       return (
-        <View style={styles.overlay}>
-          <Text style={styles.overlayTitle}>Bem-Vindo ao Gyro Orb!</Text>
-          <Text style={styles.overlayText}>Incline seu telefone para mover a bola.</Text>
-          <TouchableOpacity style={styles.button} onPress={resetGame}>
-            <Text style={styles.buttonText}>Começar Jogo!</Text>
-          </TouchableOpacity>
-        </View>
+        <HomeScreen 
+          highScore={highScore}
+          onStartGame={startGame}
+          timeBonus={TIME_BONUS}
+        />
       );
     }
     
     if (gameState === GAME_STATE.GAMEOVER) {
       return (
-        <View style={styles.overlay}>
-          <Text style={styles.overlayTitle}>FIM DE JOGO!</Text>
-          <Text style={styles.overlayScore}>Pontuação Final: {score}</Text>
-          <TouchableOpacity style={styles.button} onPress={resetGame}>
-            <Text style={styles.buttonText}>Jogar Novamente</Text>
-          </TouchableOpacity>
-        </View>
+        <GameOver 
+          finalScore={score}
+          highScore={highScore}
+          onPlayAgain={startGame}
+          onGoHome={goToHome}
+        />
       );
     }
     return null;
@@ -139,26 +155,31 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {/* Exibe a Pontuação e o Tempo no topo */}
-      <View style={styles.header}>
+      {/* Cabeçalho de Pontuação e Tempo (visível durante o jogo) */}
+      <View style={[styles.header, { opacity: gameState === GAME_STATE.PLAYING ? 1 : 0 }]}>
         <Text style={styles.headerText}>Pontos: {score}</Text>
+        <Text style={styles.headerText}>Recorde: {highScore}</Text> 
         <Text style={styles.headerText}>Tempo: {timeLeft}s</Text>
       </View>
-
-      <Text style={styles.instructions}>Colete o orbe azul!</Text>
       
+      {/* Instrução (visível durante o jogo) */}
+      <Text style={[styles.instructions, { opacity: gameState === GAME_STATE.PLAYING ? 1 : 0 }]}>
+          Colete o orbe azul!
+      </Text>
+      
+      {/* Orbe */}
       <View
         style={[
           styles.orb,
           {
             left: orbPosition.x,
             top: orbPosition.y,
-            // Oculta o orbe se o jogo não estiver em andamento
             opacity: gameState === GAME_STATE.PLAYING ? 1 : 0.2, 
           },
         ]}
       />
       
+      {/* Jogador */}
       <View
         style={[
           styles.player,
@@ -169,13 +190,13 @@ export default function App() {
         ]}
       />
       
-      {/* Renderiza a tela de Game Over ou Ready por cima de tudo */}
+      {/* Renderiza as telas de Início/Fim por cima de tudo */}
       {renderGameOverlay()}
     </View>
   );
 }
 
-// --- ESTILOS ADICIONAIS ---
+// --- ESTILOS ---
 
 const styles = StyleSheet.create({
   container: {
@@ -185,15 +206,15 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     paddingTop: 30,
     width: '100%',
     position: 'absolute',
     top: 0,
-    zIndex: 10, // Garante que fica acima de outros elementos
+    zIndex: 10,
   },
   headerText: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
   },
@@ -224,43 +245,4 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#fff',
   },
-  // Estilos da nova tela de Overlay (Game Over / Ready)
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 100, // Garante que fique acima de todos
-  },
-  overlayTitle: {
-    fontSize: 40,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 20,
-  },
-  overlayScore: {
-    fontSize: 30,
-    color: '#3498db',
-    marginBottom: 40,
-  },
-  overlayText: {
-    fontSize: 18,
-    color: '#ccc',
-    marginBottom: 40,
-  },
-  button: {
-    backgroundColor: 'coral',
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  }
 });
